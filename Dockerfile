@@ -15,6 +15,9 @@ RUN apk add --no-cache python3 build-base g++ cairo-dev pango-dev jpeg-dev gifli
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/ ./packages/
 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/ ./packages/
+COPY scripts/ ./scripts/
 RUN pnpm install --frozen-lockfile
 
 # ---- Stage 3: Builder ----
