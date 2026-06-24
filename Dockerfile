@@ -44,11 +44,13 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY entrypoint.sh /app/entrypoint.sh
 
-RUN mkdir -p /app/data && chmod 777 /app/data
+RUN chmod +x /app/entrypoint.sh
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["/app/entrypoint.sh"]
+
