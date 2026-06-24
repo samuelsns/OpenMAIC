@@ -8,25 +8,21 @@ WORKDIR /app
 
 # ---- Stage 2: Dependencies ----
 FROM base AS deps
-
 # Native build tools for sharp, @napi-rs/canvas
 RUN apk add --no-cache python3 build-base g++ cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/ ./packages/
-
+# Copy configuration and workspaces
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/ ./packages/
 COPY scripts/ ./scripts/
+
+# This will successfully run the postinstall sync scripts
 RUN pnpm install --frozen-lockfile
 
 # ---- Stage 3: Builder ----
 FROM base AS builder
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages ./packages
-COPY . .
-
+# Bring over everything that was installed and generated in the deps stage
+COPY --from=deps /app ./
 RUN pnpm build
 
 # ---- Stage 4: Runner ----
