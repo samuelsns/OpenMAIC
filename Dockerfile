@@ -23,7 +23,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 # Bring over everything that was installed and generated in the deps stage
 COPY --from=deps /app ./
-RUN pnpm --filter @openmaic/web build
+RUN pnpm --filter ./packages/web build
 
 # ---- Stage 4: Runner ----
 FROM node:22-alpine AS runner
